@@ -3,6 +3,11 @@ How to use:
 
 ```insmod watchpoint-mod.ko target_addr=0x12345678```
 
+What i can do better? 
+
+ * Muxex. Why? For more safe code, bc if 2 processes try to write new adress in sysfs causes a crash probably.  
+ * Use only 1 breakpoint not 2. Why? Optimization 
+
 --- 
 This project is a simple Linux kernel module that lets you "watch" a memory address. When something in the system reads from or writes to that address, this module will print a debug message to the kernel log 
 ``` dmesg ```.
