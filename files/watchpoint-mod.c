@@ -28,7 +28,7 @@
 #include <linux/perf_event.h>		// The main API for hardware breakpoints
 #include <linux/hw_breakpoint.h> // Helper functions for hardware breakpoints
 #include <linux/string.h>				// For kstrtoul, to convert string to number
-
+#include <linux/mutex.h>				//For blocking tread
 // --- Module Information ---
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("K0ccc");
@@ -52,6 +52,9 @@ static struct perf_event *__percpu *write_bp = NULL;
 // A pointer to our directory in `/sys/kernel/`. This is needed to create files
 // inside it and to clean up properly when the module is removed.
 static struct kobject *wp_kobj;
+
+// Define mutex variable
+static DEFINE_MUTEX(watchpoint_mutex);
 
 // --- Breakpoint Handler Functions ---
 
@@ -201,7 +204,9 @@ static ssize_t target_addr_store(struct kobject *kobj, struct kobj_attribute *at
 	pr_info("watchpoint-mod: sysfs request to set watchpoint at address 0x%lx\n", new_addr);
 
 	// Call our helper to do the actual work of setting the breakpoint.
+	mutex_lock(&watchpoint_mutex);
 	ret = register_watchpoints(new_addr);
+	mutex_unlock(&watchpoint_mutex);
 	if (ret)
 	{
 		// If registration failed, return the error.
@@ -249,7 +254,9 @@ static int __init watchpoint_mod_init(void)
 	if (target_addr != 0)
 	{
 		pr_info("watchpoint-mod: Address 0x%lx provided at load time. Registering...\n", target_addr);
+		mutex_lock(&watchpoint_mutex);
 		ret = register_watchpoints(target_addr);
+		mutex_unlock(&watchpoint_mutex);
 		if (ret)
 		{
 			// If it failed, we must clean up everything we just set up.
