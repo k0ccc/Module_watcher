@@ -7,6 +7,7 @@ What i can do better?
 
  * Muxex. Why? For more safe code, bc if 2 processes try to write new adress in sysfs causes a crash probably.  
  * Use only 1 breakpoint not 2. Why? Optimization 
+ - [x] Maded in v2_optimization branch
 
 --- 
 This project is a simple Linux kernel module that lets you "watch" a memory address. When something in the system reads from or writes to that address, this module will print a debug message to the kernel log 
@@ -65,7 +66,7 @@ meta-custom           /home/koccc/poky/meta-custom                              
 
 ### 4 Part: Building and Running in QEMU
 
-Build the Image: This is the magic step when you wait! The bitbake command will read all the recipes and build a complete, bootable Linux image from source code. This will take a long time (possibly hours) the first time you run it, as it has to download(more 40GB) and compile everything(more threads CPU better).
+Build the Image: This is the magic step when you wait! The bitbake command will read all the recipes and build a complete, bootable Linux image from source code. This will take a long time (possibly hours) the first time you run it, as it has to download(more 90GB) and compile everything(more threads CPU better).
 
 ```bitbake core-image-minimal```
 
